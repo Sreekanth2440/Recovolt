@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Completed Jobs - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-400 text-3xl">task_alt</span> Completed Jobs
+            </h4>
+            <p class="text-on-surface-variant text-sm mt-1">Review the complaints you have successfully resolved.</p>
+        </div>
+        <a href="{{ url_for('worker.dashboard') }}" class="px-4 py-2 bg-surface-container border border-white/5 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 text-on-surface">
+            <span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard
+        </a>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        {% if jobs %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                {% for c in jobs %}
+                <div class="glass-card-interactive group p-6 rounded-2xl flex flex-col justify-between border border-white/5 hover:border-green-500/40 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                {% if c.priority == 'high' %}bg-error/20 text-error border border-error/20
+                                {% elif c.priority == 'medium' %}bg-orange-500/20 text-orange-400 border border-orange-500/20
+                                {% else %}bg-primary/20 text-primary border border-primary/20{% endif %}">
+                                {{ c.priority }}
+                            </span>
+                            <span class="text-xs font-data-tabular text-on-surface-variant">#{{ c.id }}</span>
+                        </div>
+                        <h4 class="font-display text-lg font-bold text-white mb-2">{{ c.title }}</h4>
+                        <p class="text-sm text-on-surface-variant mb-4">{{ c.category_display }}</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="inline-flex items-center gap-1 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-[16px]">calendar_today</span> 
+                                <span>{{ c.resolved_at.strftime('%d %b %Y') if c.resolved_at else 'N/A' }}</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-500/10 text-green-400 border border-green-500/20">
+                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                {{ c.status_display }}
+                            </span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/5">
+                            <a href="{{ url_for('worker.complaint_details', complaint_id=c.id) }}" class="w-full bg-surface-container border border-white/5 hover:bg-white/10 text-on-surface hover:text-green-400 transition-colors py-2 rounded-xl font-bold flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+        <div class="p-16 text-center flex flex-col items-center justify-center bg-surface-container/20">
+            <div class="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center mb-6 border border-white/5 shadow-inner">
+                <span class="material-symbols-outlined text-4xl text-on-surface-variant">history</span>
+            </div>
+            <h5 class="font-display text-xl font-bold text-on-surface mb-2">No completed jobs</h5>
+            <p class="text-on-surface-variant mb-6 max-w-sm mx-auto">You haven't completed any jobs yet. Resolved assignments will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

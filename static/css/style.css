@@ -1,0 +1,234 @@
+/* ==========================================================================
+   RecoVolt — Advanced Interactive Styling & Design System
+   ========================================================================== */
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #031427;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(84, 141, 255, 0.25);
+    border-radius: 9999px;
+    border: 2px solid #031427;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(84, 141, 255, 0.5);
+}
+
+/* ── Prevent Browser Autofill Light Blue Background Overlay ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: #d3e4fe !important;
+    transition: background-color 99999s ease-in-out 0s !important;
+    box-shadow: inset 0 0 0px 1000px #102034 !important;
+}
+
+/* ── Scroll Progress Bar ── */
+#scrollProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #548dff, #7bd0ff, #38ef7d);
+    z-index: 100;
+    transition: width 0.1s ease-out;
+}
+
+/* ── Glassmorphism & Card Overhaul ── */
+.glass-card {
+    background: rgba(16, 32, 52, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive {
+    cursor: pointer;
+    will-change: transform, box-shadow;
+}
+.glass-card-interactive:hover {
+    border-color: rgba(175, 198, 255, 0.35);
+    background: rgba(27, 43, 63, 0.98);
+    transform: translateY(-6px) scale(1.008);
+    box-shadow: 0 16px 40px -10px rgba(84, 141, 255, 0.25);
+}
+
+.glass-nav {
+    background: rgba(3, 20, 39, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Pulsing Status Indicators ── */
+.status-pulse {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.status-pulse::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0.75;
+    animation: statusPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes statusPing {
+    75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.status-pulse-pending::before { background-color: #f59e0b; }
+.status-pulse-assigned::before { background-color: #3b82f6; }
+.status-pulse-in_progress::before { background-color: #8b5cf6; }
+.status-pulse-resolved::before { background-color: #10b981; }
+.status-pulse-closed::before { background-color: #6b7280; }
+
+/* ── Table Interactivity & Polish ── */
+.table-interactive {
+    border-collapse: separate;
+    border-spacing: 0 6px;
+}
+.table-interactive tbody tr {
+    background: rgba(16, 32, 52, 0.4);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 12px;
+}
+.table-interactive tbody tr:hover {
+    background: rgba(38, 54, 74, 0.8);
+    transform: scale(1.005) translateX(4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.table-interactive td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.table-interactive td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+/* ── Drag and Drop File Upload Area ── */
+.dropzone-container {
+    border: 2px dashed rgba(84, 141, 255, 0.3);
+    background: rgba(16, 32, 52, 0.5);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.dropzone-container:hover, .dropzone-container.drag-over {
+    border-color: #548dff;
+    background: rgba(84, 141, 255, 0.1);
+    transform: scale(1.01);
+}
+
+/* ── Star Rating Interactivity ── */
+.star-rating-interactive {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 6px;
+}
+.star-rating-interactive input {
+    display: none;
+}
+.star-rating-interactive label {
+    font-size: 2rem;
+    color: #414655;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.star-rating-interactive label:hover,
+.star-rating-interactive label:hover ~ label,
+.star-rating-interactive input:checked ~ label {
+    color: #fbbf24;
+    transform: scale(1.15);
+}
+
+/* ── Toast Notification Popup ── */
+.toast-item {
+    animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.toast-out {
+    animation: toastOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes toastOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+}
+
+/* ── Floating Label Form Fields ── */
+.form-input-interactive {
+    background: rgba(11, 28, 48, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #d3e4fe !important;
+    transition: all 0.25s ease !important;
+}
+.form-input-interactive:focus {
+    border-color: #548dff !important;
+    box-shadow: 0 0 0 4px rgba(84, 141, 255, 0.2) !important;
+    outline: none !important;
+    background: rgba(16, 32, 52, 0.9) !important;
+}
+
+/* ── Copy to Clipboard Button Effect ── */
+.copy-btn {
+    transition: all 0.2s ease;
+}
+.copy-btn:hover {
+    color: #7bd0ff;
+    transform: scale(1.1);
+}
+.copy-btn:active {
+    transform: scale(0.95);
+}
+
+/* ── Filter Pills ── */
+.filter-pill {
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: rgba(38, 54, 74, 0.6);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+.filter-pill:hover {
+    background: rgba(84, 141, 255, 0.2);
+    color: #d3e4fe;
+    border-color: rgba(84, 141, 255, 0.3);
+}
+.filter-pill.active {
+    background: #548dff;
+    color: #ffffff;
+    border-color: #548dff;
+    box-shadow: 0 4px 14px rgba(84, 141, 255, 0.4);
+}
+
+/* ── Skeleton Loading Shimmer ── */
+.shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}

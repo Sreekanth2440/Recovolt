@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface">Admin Dashboard</h4>
+            <p class="text-on-surface-variant text-sm mt-1">System overview and management console.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{ url_for('admin.reports') }}" class="px-4 py-2 bg-surface-container border border-white/5 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 text-on-surface">
+                <span class="material-symbols-outlined text-[18px]">assessment</span> View Reports
+            </a>
+            <a href="{{ url_for('admin.complaints') }}" class="px-4 py-2 bg-primary-container hover:bg-primary-fixed hover:text-on-primary-fixed text-white rounded-lg text-sm font-bold transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">assignment</span> Manage Complaints
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Cards Row 1 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-white/10 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-on-surface-variant text-2xl group-hover:scale-110 transition-transform">list_alt</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-on-surface">{{ total_complaints }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Total Complaints</div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-error/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-error/10 border border-error/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-error text-2xl group-hover:scale-110 transition-transform">pending_actions</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-error">{{ pending }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Pending</div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-yellow-500/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-yellow-400 text-2xl group-hover:scale-110 transition-transform">engineering</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-yellow-400">{{ assigned }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">In Progress</div>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-green-500/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-green-400 text-2xl group-hover:scale-110 transition-transform">check_circle</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-green-400">{{ resolved }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Resolved</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Cards Row 2 -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-tertiary/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-tertiary/10 border border-tertiary/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-tertiary text-2xl group-hover:scale-110 transition-transform">group</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-tertiary">{{ total_users }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Consumers</div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-primary/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">support_agent</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-primary">{{ total_workers }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Workers</div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-orange-500/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-orange-400 text-2xl group-hover:scale-110 transition-transform">star</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-orange-400">{{ total_feedbacks }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Feedbacks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Complaints Table -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface-container/30">
+            <h5 class="font-display text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">history</span> Recent Complaints
+            </h5>
+            <a href="{{ url_for('admin.complaints') }}" class="text-sm font-medium text-tertiary hover:text-tertiary-fixed transition-colors">View All</a>
+        </div>
+        
+        {% if recent_complaints %}
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for c in recent_complaints %}
+                <a href="{{ url_for('admin.complaint_details', complaint_id=c.id) }}" class="glass-card-interactive group p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-primary/40 transition-all hover:-translate-y-1 bg-surface-container-lowest">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center shrink-0 border border-white/5 group-hover:border-primary/20 transition-colors">
+                            {% if 'voltage' in c.title.lower() or 'power' in c.title.lower() %}
+                            <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+                            {% elif 'meter' in c.title.lower() %}
+                            <span class="material-symbols-outlined text-primary text-[20px]">speed</span>
+                            {% else %}
+                            <span class="material-symbols-outlined text-primary text-[20px]">electrical_services</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h4 class="font-display text-sm font-bold text-white mb-1">#{{ c.id }} {{ c.title }}</h4>
+                            <div class="flex items-center gap-3 text-xs text-on-surface-variant">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">person</span> {{ c.consumer.name }}</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">event</span> {{ c.created_at.strftime('%d %b') }}</span>
+                                <span>{{ c.category_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                            {% if c.priority == 'high' %}bg-error/10 text-error border border-error/20
+                            {% elif c.priority == 'medium' %}bg-orange-500/10 text-orange-400 border border-orange-500/20
+                            {% else %}bg-primary/10 text-primary border border-primary/20{% endif %}">
+                            <span class="w-1.5 h-1.5 rounded-full {% if c.priority == 'high' %}bg-error{% elif c.priority == 'medium' %}bg-orange-400{% else %}bg-primary{% endif %}"></span>
+                            {{ c.priority }}
+                        </span>
+                        
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                            {% if c.status == 'pending' %}bg-error/10 text-error border border-error/20
+                            {% elif c.status == 'in_progress' or c.status == 'assigned' %}bg-yellow-500/10 text-yellow-400 border border-yellow-500/20
+                            {% elif c.status == 'resolved' or c.status == 'closed' %}bg-green-500/10 text-green-400 border border-green-500/20
+                            {% else %}bg-primary/10 text-primary border border-primary/20{% endif %}">
+                            {% if c.status == 'pending' %}<span class="material-symbols-outlined text-[12px]">warning</span>
+                            {% elif c.status == 'in_progress' or c.status == 'assigned' %}<span class="material-symbols-outlined text-[12px] animate-spin">autorenew</span>
+                            {% elif c.status == 'resolved' or c.status == 'closed' %}<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                            {% else %}<span class="material-symbols-outlined text-[12px]">info</span>{% endif %}
+                            {{ c.status_display }}
+                        </span>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-[20px] ml-1">chevron_right</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+            <div class="p-16 text-center flex flex-col items-center justify-center">
+                <div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4 border border-white/5">
+                    <span class="material-symbols-outlined text-4xl text-on-surface-variant">inbox</span>
+                </div>
+                <h5 class="font-display text-xl font-bold text-on-surface mb-2">No complaints yet</h5>
+                <p class="text-sm text-on-surface-variant mb-6 max-w-sm">There are currently no complaints filed in the system.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

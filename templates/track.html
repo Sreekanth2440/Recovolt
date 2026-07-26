@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Track Complaint - RecoVolt{% endblock %}
+
+{% block content_public %}
+<section class="min-h-screen pt-32 pb-20 px-6 relative overflow-hidden">
+    <!-- Background Glow Effects -->
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-tertiary/10 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto relative z-10">
+        <div class="text-center mb-12 reveal active">
+            <h1 class="font-display text-3xl md:text-4xl text-on-background font-bold tracking-tight mb-4">Track Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-tertiary">Complaint</span></h1>
+            <p class="text-on-surface-variant max-w-xl mx-auto">Enter your complaint ID and registered email or phone number to check its current status.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 mb-8 reveal active delay-100">
+            <form method="POST" class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1 space-y-2">
+                    <label class="block font-label-caps text-on-surface-variant">Complaint ID</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">tag</span>
+                        <input type="number" name="complaint_id" placeholder="e.g. 101" required value="{{ request.form.get('complaint_id', '') }}"
+                               class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-tertiary/50 focus:ring-1 focus:ring-tertiary/50 transition-all font-body-md">
+                    </div>
+                </div>
+                <div class="flex-1 space-y-2">
+                    <label class="block font-label-caps text-on-surface-variant">Email or Phone</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">badge</span>
+                        <input type="text" name="identifier" placeholder="Registered contact info" required value="{{ request.form.get('identifier', '') }}"
+                               class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-tertiary/50 focus:ring-1 focus:ring-tertiary/50 transition-all font-body-md">
+                    </div>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full sm:w-auto bg-tertiary-container text-white px-8 py-3 rounded-lg font-bold hover:bg-tertiary-fixed hover:text-on-tertiary-fixed transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">search</span> Track
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if complaint %}
+        <div class="glass-card rounded-2xl overflow-hidden reveal active">
+            <!-- Header -->
+            <div class="bg-surface-container/50 border-b border-white/5 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h2 class="font-display text-xl font-bold text-on-surface">Complaint #{{ complaint.id }}</h2>
+                        <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider
+                            {% if complaint.priority == 'high' %}bg-error/20 text-error
+                            {% elif complaint.priority == 'medium' %}bg-orange-500/20 text-orange-400
+                            {% else %}bg-primary/20 text-primary{% endif %}">
+                            {{ complaint.priority }}
+                        </span>
+                    </div>
+                    <p class="text-on-surface-variant">{{ complaint.title }}</p>
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm
+                        {% if complaint.status == 'resolved' or complaint.status == 'closed' %}bg-green-500/20 text-green-400 border border-green-500/30
+                        {% elif complaint.status == 'pending' %}bg-yellow-500/20 text-yellow-400 border border-yellow-500/30
+                        {% else %}bg-primary-container/20 text-primary border border-primary-container/30{% endif %}">
+                        {% if complaint.status == 'resolved' or complaint.status == 'closed' %}<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        {% elif complaint.status == 'pending' %}<span class="material-symbols-outlined text-[18px]">pending</span>
+                        {% else %}<span class="material-symbols-outlined text-[18px]">autorenew</span>{% endif %}
+                        {{ complaint.status_display }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 md:p-8">
+                <!-- Timeline -->
+                <div class="mb-10">
+                    <h3 class="font-label-caps text-on-surface-variant mb-6">Status Timeline</h3>
+                    <div class="relative flex justify-between items-center w-full">
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-surface-container-highest rounded-full z-0"></div>
+                        
+                        {% set statuses = ['pending', 'assigned', 'in_progress', 'resolved', 'closed'] %}
+                        {% set current_idx = statuses.index(complaint.status) if complaint.status in statuses else 0 %}
+                        
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary transition-all z-0" style="width: {{ (current_idx / (statuses|length - 1)) * 100 }}%"></div>
+
+                        {% for s in statuses %}
+                        <div class="relative z-10 flex flex-col items-center gap-2">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 transition-colors
+                                {% if loop.index0 < current_idx %} bg-primary border-primary text-on-primary
+                                {% elif loop.index0 == current_idx %} bg-surface border-primary text-primary shadow-[0_0_15px_rgba(175,198,255,0.5)]
+                                {% else %} bg-surface-container border-surface-container-highest text-on-surface-variant {% endif %}">
+                                {% if loop.index0 < current_idx %}
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                {% elif loop.index0 == current_idx %}
+                                    <div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+                                {% else %}
+                                    {{ loop.index }}
+                                {% endif %}
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-medium uppercase tracking-wider
+                                {% if loop.index0 <= current_idx %}text-on-surface{% else %}text-on-surface-variant/50{% endif %}">
+                                {{ s.replace('_', ' ') }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container/30 p-6 rounded-xl border border-white/5">
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Category</span>
+                        <span class="text-on-surface font-medium">{{ complaint.category_display }}</span>
+                    </div>
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Location</span>
+                        <span class="text-on-surface font-medium">{{ complaint.location }}</span>
+                    </div>
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Filed On</span>
+                        <span class="text-on-surface font-medium">{{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                    </div>
+                    {% if complaint.resolved_at %}
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Resolved On</span>
+                        <span class="text-green-400 font-medium">{{ complaint.resolved_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if complaint.assigned_worker %}
+                    <div class="md:col-span-2 flex items-center gap-3 bg-surface-container p-3 rounded-lg border border-white/5 mt-2">
+                        <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">
+                            {{ complaint.assigned_worker.name[0] | upper }}
+                        </div>
+                        <div>
+                            <span class="block text-xs text-on-surface-variant">Assigned Worker</span>
+                            <span class="text-on-surface font-medium">{{ complaint.assigned_worker.name }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="mt-8 text-center bg-primary/10 border border-primary/20 rounded-lg p-4">
+                    <span class="material-symbols-outlined text-primary mb-2">info</span>
+                    <p class="text-sm text-on-surface-variant">
+                        <a href="{{ url_for('auth.login') }}" class="text-primary hover:underline font-bold">Log in</a> to your account to view full details, add comments, or submit feedback for this resolution.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

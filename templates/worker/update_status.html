@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Update Status - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-8 mt-10">
+    
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface">Update Complaint Status</h4>
+            <p class="text-on-surface-variant text-sm mt-1">Keep the consumer informed about the progress.</p>
+        </div>
+        <a href="{{ url_for('worker.complaint_details', complaint_id=complaint.id) }}" class="px-4 py-2 bg-surface-container border border-white/5 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 text-on-surface">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back
+        </a>
+    </div>
+
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 bg-surface-container/30">
+            <h5 class="font-display text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">edit_note</span> Complaint #{{ complaint.id }}
+            </h5>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <div class="bg-surface-container-highest/30 p-4 rounded-lg border border-white/5 mb-8 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                <div>
+                    <strong class="text-on-surface block text-lg mb-1">{{ complaint.title }}</strong>
+                    <span class="text-sm text-on-surface-variant flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">category</span> {{ complaint.category_display }} 
+                    </span>
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
+                        {% if complaint.status == 'in_progress' %}bg-yellow-500/10 text-yellow-400 border border-yellow-500/20
+                        {% else %}bg-primary/10 text-primary border border-primary/20{% endif %}">
+                        Current: {{ complaint.status_display }}
+                    </span>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('worker.update_status', complaint_id=complaint.id) }}" class="space-y-6" id="statusForm" novalidate>
+                
+                <!-- Status Select -->
+                <div class="space-y-2">
+                    <label class="block font-label-caps text-on-surface-variant">New Status *</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">update</span>
+                        <select name="status" class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md appearance-none">
+                            {% if complaint.status == 'assigned' %}
+                                <option value="in_progress" class="bg-surface-container">In Progress</option>
+                                <option value="resolved" class="bg-surface-container">Resolved</option>
+                            {% elif complaint.status == 'in_progress' %}
+                                <option value="resolved" class="bg-surface-container">Resolved</option>
+                            {% endif %}
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="space-y-2">
+                    <label class="block font-label-caps text-on-surface-variant">Resolution Notes (optional)</label>
+                    <div class="relative">
+                        <textarea name="notes" rows="4" placeholder="Add any notes about the work done..."
+                                  class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md resize-y"></textarea>
+                    </div>
+                </div>
+
+                <!-- Alert -->
+                <div class="flex gap-4 p-4 rounded-lg bg-primary/10 border border-primary/20 mt-6">
+                    <span class="material-symbols-outlined text-primary shrink-0">info</span>
+                    <div>
+                        <strong class="text-primary text-sm block mb-1">Notification Alert</strong>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">The consumer will be automatically notified via email when you update the status of this complaint.</p>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-end gap-4">
+                    <button type="submit" class="relative overflow-hidden bg-gradient-to-r from-primary-container to-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 group text-base shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(84,141,255,0.4)] transition-all hover:-translate-y-1 px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2"
+                            onclick="this.closest('form').submit();">
+                        <span class="material-symbols-outlined text-[20px]">save</span> Update Status
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

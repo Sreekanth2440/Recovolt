@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block title %}Complaint #{{ complaint.id }} - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <a href="{{ url_for('consumer.complaint_history') }}" class="w-8 h-8 rounded-full bg-surface-container hover:bg-white/10 text-on-surface-variant flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                </a>
+                <h4 class="font-display text-2xl font-bold text-on-surface">Complaint #{{ complaint.id }}</h4>
+            </div>
+        </div>
+        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm
+            {% if complaint.status == 'resolved' or complaint.status == 'closed' %}bg-green-500/20 text-green-400 border border-green-500/30
+            {% elif complaint.status == 'pending' %}bg-yellow-500/20 text-yellow-400 border border-yellow-500/30
+            {% else %}bg-primary-container/20 text-primary border border-primary-container/30{% endif %}">
+            {% if complaint.status == 'resolved' or complaint.status == 'closed' %}<span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {% elif complaint.status == 'pending' %}<span class="material-symbols-outlined text-[18px]">pending</span>
+            {% else %}<span class="material-symbols-outlined text-[18px]">autorenew</span>{% endif %}
+            {{ complaint.status_display }}
+        </span>
+    </div>
+
+    <!-- Status Timeline -->
+    <div class="glass-card rounded-xl border border-white/5 p-6 md:p-8">
+        <h3 class="font-label-caps text-on-surface-variant mb-6 text-center">Status Timeline</h3>
+        <div class="relative flex justify-between items-center w-full max-w-4xl mx-auto">
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-surface-container-highest rounded-full z-0"></div>
+            
+            {% set statuses = ['pending', 'assigned', 'in_progress', 'resolved', 'closed'] %}
+            {% set current_idx = statuses.index(complaint.status) if complaint.status in statuses else 0 %}
+            
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary transition-all duration-1000 z-0" style="width: {{ (current_idx / (statuses|length - 1)) * 100 }}%"></div>
+
+            {% for s in statuses %}
+            <div class="relative z-10 flex flex-col items-center gap-2">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-colors
+                    {% if loop.index0 < current_idx %} bg-primary border-primary text-on-primary
+                    {% elif loop.index0 == current_idx %} bg-surface border-primary text-primary shadow-[0_0_20px_rgba(175,198,255,0.4)]
+                    {% else %} bg-surface-container border-surface-container-highest text-on-surface-variant {% endif %}">
+                    {% if loop.index0 < current_idx %}
+                        <span class="material-symbols-outlined text-[20px]">check</span>
+                    {% elif loop.index0 == current_idx %}
+                        <div class="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+                    {% else %}
+                        {{ loop.index }}
+                    {% endif %}
+                </div>
+                <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider
+                    {% if loop.index0 <= current_idx %}text-on-surface{% else %}text-on-surface-variant/50{% endif %}">
+                    {{ s.replace('_', ' ') }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Complaint Details -->
+        <div class="lg:col-span-2 glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-6 border-b border-white/5 bg-surface-container/30">
+                <h5 class="font-display text-xl font-bold text-on-surface">{{ complaint.title }}</h5>
+                <p class="text-sm text-on-surface-variant mt-1">Submitted on {{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-8">
+                <!-- Info Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container/30 p-6 rounded-xl border border-white/5">
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Category</span>
+                        <span class="text-on-surface font-medium">{{ complaint.category_display }}</span>
+                    </div>
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Priority</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                            {% if complaint.priority == 'high' %}bg-error/20 text-error
+                            {% elif complaint.priority == 'medium' %}bg-orange-500/20 text-orange-400
+                            {% else %}bg-primary/20 text-primary{% endif %}">
+                            {{ complaint.priority }}
+                        </span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Location</span>
+                        <span class="text-on-surface font-medium flex items-start gap-2">
+                            <span class="material-symbols-outlined text-tertiary text-[20px]">location_on</span>
+                            {{ complaint.location }}
+                        </span>
+                    </div>
+                    {% if complaint.resolved_at %}
+                    <div class="md:col-span-2 pt-4 border-t border-white/5">
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Resolution Time</span>
+                        <span class="text-green-400 font-bold">{{ complaint.resolved_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Description</h6>
+                    <p class="text-on-surface leading-relaxed text-sm whitespace-pre-wrap">{{ complaint.description }}</p>
+                </div>
+
+                <!-- Image -->
+                {% if complaint.image %}
+                <div>
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Attached Image</h6>
+                    <div class="rounded-xl overflow-hidden border border-white/10 inline-block bg-surface-container">
+                        <img src="{{ url_for('static', filename='../uploads/' + complaint.image) }}" alt="Complaint Attachment" class="max-w-full h-auto max-h-[400px] object-contain">
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Map -->
+                {% if complaint.latitude and complaint.longitude %}
+                <div class="mt-8">
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Location Map</h6>
+                    <div class="rounded-xl overflow-hidden border border-white/10 h-[300px] w-full" id="map-{{ complaint.id }}"></div>
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var map = L.map('map-{{ complaint.id }}').setView([{{ complaint.latitude }}, {{ complaint.longitude }}], 15);
+                            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                                attribution: '&copy; OpenStreetMap contributors',
+                                subdomains: 'abcd',
+                                maxZoom: 20
+                            }).addTo(map);
+                            L.marker([{{ complaint.latitude }}, {{ complaint.longitude }}]).addTo(map)
+                                .bindPopup("<b>{{ complaint.location }}</b>").openPopup();
+                        });
+                    </script>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Side Panels -->
+        <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Assigned Worker -->
+            <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+                <div class="p-4 bg-primary-container/20 border-b border-primary-container/30 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">engineering</span>
+                    <h6 class="font-display font-bold text-on-surface">Assigned Worker</h6>
+                </div>
+                <div class="p-6">
+                    {% if complaint.assigned_worker %}
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-2xl bg-surface-container-highest border border-white/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl text-primary">person</span>
+                            </div>
+                            <div>
+                                <h6 class="font-bold text-on-surface text-lg">{{ complaint.assigned_worker.name }}</h6>
+                                <p class="text-xs text-on-surface-variant">{{ complaint.assigned_worker.designation or 'KSEB Worker' }}</p>
+                            </div>
+                        </div>
+                        {% if complaint.assigned_worker.section %}
+                        <p class="text-sm text-on-surface mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-tertiary text-[18px]">business</span> {{ complaint.assigned_worker.section }}
+                        </p>
+                        {% endif %}
+                        <a href="{{ url_for('consumer.worker_details', complaint_id=complaint.id) }}" class="w-full block text-center px-4 py-2 bg-surface-container border border-white/5 hover:bg-white/5 text-sm font-medium rounded-lg transition-colors">
+                            View Worker Details
+                        </a>
+                    {% else %}
+                        <div class="text-center py-6 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">pending</span>
+                            <p class="text-sm">Not yet assigned</p>
+                            <p class="text-xs mt-1 opacity-70">A worker will be assigned shortly.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+                <div class="p-4 bg-tertiary-container/20 border-b border-tertiary-container/30 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary">reviews</span>
+                    <h6 class="font-display font-bold text-on-surface">Feedback</h6>
+                </div>
+                <div class="p-6 text-center">
+                    {% if complaint.feedback %}
+                        <div class="flex justify-center gap-1 mb-4">
+                            {% for i in range(5) %}
+                                {% if i < complaint.feedback.rating %}
+                                    <span class="material-symbols-outlined text-yellow-400" style="font-variation-settings: 'FILL' 1;">star</span>
+                                {% else %}
+                                    <span class="material-symbols-outlined text-surface-container-highest">star</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="text-sm text-on-surface italic bg-surface-container/50 p-4 rounded-lg border border-white/5">
+                            "{{ complaint.feedback.comment or 'No additional comments provided.' }}"
+                        </p>
+                    {% elif complaint.status == 'resolved' %}
+                        <div class="py-2">
+                            <p class="text-sm text-on-surface-variant mb-4">How was our service? Please rate your experience.</p>
+                            <a href="{{ url_for('consumer.feedback', complaint_id=complaint.id) }}" class="inline-flex items-center justify-center w-full px-4 py-3 bg-tertiary-container hover:bg-tertiary-fixed text-white hover:text-on-tertiary-fixed rounded-lg text-sm font-bold transition-colors">
+                                Give Feedback
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="py-6 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl mb-2 opacity-30">lock</span>
+                            <p class="text-sm">Feedback opens after resolution</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Messages / Chat Panel -->
+            {% if current_user.role == 'consumer' and complaint.assigned_worker_id or current_user.role == 'worker' %}
+            <div class="glass-card rounded-xl border border-white/5 overflow-hidden flex flex-col h-[500px]">
+                <div class="p-4 bg-secondary-container/30 border-b border-secondary-container/50 flex items-center justify-between gap-2 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">forum</span>
+                        <h6 class="font-display font-bold text-on-surface">Messages</h6>
+                    </div>
+                    <span class="text-xs px-2 py-1 bg-surface-container rounded text-on-surface-variant font-label-caps" id="msg-status">Live</span>
+                </div>
+                
+                <!-- Message List -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col" id="chat-messages" data-complaint-id="{{ complaint.id }}">
+                    <div class="text-center py-4">
+                        <span class="material-symbols-outlined text-on-surface-variant/50 animate-spin">refresh</span>
+                    </div>
+                </div>
+                
+                <!-- Message Input -->
+                <div class="p-4 border-t border-white/5 bg-surface-container/30 shrink-0">
+                    <form id="chat-form" class="flex items-end gap-2">
+                        <div class="flex-1 relative">
+                            <textarea id="chat-input" rows="1" placeholder="Type a message..." class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 px-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md resize-none" style="min-height: 42px; max-height: 120px;"></textarea>
+                        </div>
+                        <button type="submit" class="w-10 h-10 shrink-0 rounded-lg bg-primary text-on-primary hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">send</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const msgStatus = document.getElementById('msg-status');
+        
+        if (!chatForm) return;
+
+        const complaintId = chatMessages.dataset.complaintId;
+        const currentUserId = {{ current_user.id }};
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function fetchMessages() {
+            fetch(`/api/complaints/${complaintId}/messages`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.messages) {
+                        chatMessages.innerHTML = '';
+                        if (data.messages.length === 0) {
+                            chatMessages.innerHTML = '<div class="text-center py-6 text-on-surface-variant/50 text-sm">No messages yet. Start the conversation!</div>';
+                            return;
+                        }
+                        
+                        data.messages.forEach(msg => {
+                            const isMe = msg.sender_id === currentUserId;
+                            const alignClass = isMe ? 'items-end' : 'items-start';
+                            const bubbleClass = isMe 
+                                ? 'bg-primary-container text-on-primary-container rounded-tl-xl rounded-tr-xl rounded-bl-xl' 
+                                : 'bg-surface-container-highest text-on-surface rounded-tl-xl rounded-tr-xl rounded-br-xl';
+                                
+                            const senderLabel = isMe ? 'You' : msg.sender_name;
+                            
+                            const html = `
+                                <div class="flex flex-col ${alignClass} max-w-[85%] ${isMe ? 'ml-auto' : ''}">
+                                    <span class="text-[10px] text-on-surface-variant mb-1 ml-1">${senderLabel} &bull; ${msg.created_at}</span>
+                                    <div class="${bubbleClass} px-4 py-2 text-sm shadow-sm border border-white/5">
+                                        ${msg.content}
+                                    </div>
+                                </div>
+                            `;
+                            chatMessages.insertAdjacentHTML('beforeend', html);
+                        });
+                        scrollToBottom();
+                    }
+                })
+                .catch(err => {
+                    msgStatus.textContent = 'Disconnected';
+                    msgStatus.classList.replace('bg-surface-container', 'bg-error/20');
+                    msgStatus.classList.add('text-error');
+                });
+        }
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = chatInput.value.trim();
+            if (!content) return;
+            
+            chatInput.value = '';
+            chatInput.disabled = true;
+            
+            fetch(`/api/complaints/${complaintId}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: content })
+            })
+            .then(res => res.json())
+            .then(data => {
+                chatInput.disabled = false;
+                chatInput.focus();
+                if (data.success) {
+                    fetchMessages();
+                }
+            })
+            .catch(err => {
+                chatInput.disabled = false;
+            });
+        });
+
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        fetchMessages();
+        setInterval(fetchMessages, 5000);
+    });
+</script>
+{% endblock %}

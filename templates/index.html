@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}RecoVolt - KSEB Complaint Management{% endblock %}
+{% block content_public %}
+<!-- Hero Section -->
+<section class="relative flex items-center justify-center px-6 overflow-hidden" style="min-height: 100vh;">
+    <!-- Premium Grid Background -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdHRlcm4gaWQ9InNtYWxsR3JpZCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNMTAgMEwwIDBMMCAxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9InVybCgjc21hbGxHcmlkKSIvPjxwYXRoIGQ9Ik00MCAwTDAgMEwwIDQwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wNykiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-40 z-0 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background z-0 pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center reveal active pt-16">
+        <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary mb-8 shadow-[0_0_15px_rgba(84,141,255,0.15)] hover:shadow-[0_0_25px_rgba(84,141,255,0.3)] transition-all cursor-default">
+            <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            </span>
+            <span class="font-label-caps text-xs tracking-[0.2em] uppercase font-bold">KSEB Next-Gen Utility</span>
+        </div>
+        
+        <h1 class="font-display text-4xl md:text-5xl lg:text-7xl mb-6 text-white leading-tight font-extrabold tracking-tight drop-shadow-lg">
+            Kerala's Modern <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-primary to-emerald-400 animate-gradient-x">Power Management</span>
+        </h1>
+        
+        <p class="text-lg md:text-xl text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed font-light">
+            A mission-critical platform engineered for high-availability energy distribution, real-time fault tracking, and frictionless consumer service.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('auth.register') }}" class="relative overflow-hidden bg-gradient-to-r from-primary-container to-blue-600 text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 group text-base shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(84,141,255,0.4)] transition-all hover:-translate-y-1">
+                <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none"></span>
+                <span class="material-symbols-outlined text-[22px] relative z-10">bolt</span>
+                <span class="relative z-10">Report Issue</span>
+                <span class="material-symbols-outlined text-[22px] group-hover:translate-x-1.5 transition-transform relative z-10">arrow_right_alt</span>
+            </a>
+            <a href="{{ url_for('track') }}" class="glass-card-interactive bg-surface-bright/50 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-base hover:-translate-y-1">
+                <span class="material-symbols-outlined text-[22px]">radar</span>
+                Track Progress
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-24 px-gutter relative z-20 -mt-20">
+    <div class="max-w-container-max mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center reveal active">
+        <!-- Stat 1 -->
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.total if stats and stats.total else '500' }}" data-suffix="{{ 'k+' if not stats else '' }}">{{ stats.total if stats else '500k+' }}</div>
+            <div class="font-label-caps text-primary uppercase tracking-widest text-xs font-semibold">Total Complaints</div>
+        </div>
+        <!-- Stat 2 -->
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.resolved if stats and stats.resolved else '485' }}" data-suffix="{{ 'k+' if not stats else '' }}">{{ stats.resolved if stats else '485k+' }}</div>
+            <div class="font-label-caps text-emerald-400 uppercase tracking-widest text-xs font-semibold">Resolved</div>
+        </div>
+        <!-- Stat 3 -->
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.avg_rating if stats and stats.avg_rating else '4.9' }}" data-suffix="/5">{{ stats.avg_rating if stats else '4.9/5' }}</div>
+            <div class="font-label-caps text-amber-400 uppercase tracking-widest text-xs font-semibold">Avg Consumer Rating</div>
+        </div>
+        <!-- Stat 4 -->
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.resolution_rate if stats and stats.resolution_rate else '98.5' }}" data-suffix="%">{{ stats.resolution_rate if stats else '98.5%' }}</div>
+            <div class="font-label-caps text-sky-400 uppercase tracking-widest text-xs font-semibold">Resolution Rate</div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-24 px-gutter relative" id="features">
+    <div class="max-w-container-max mx-auto">
+        <div class="mb-20 text-center reveal active">
+            <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-6">Engineered for <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Performance</span></h2>
+            <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Leveraging modern data architectures to ensure Kerala's power grid remains resilient, robust, and highly responsive to outages.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal active">
+            <!-- Feature 1 -->
+            <div class="glass-card-interactive p-10 rounded-3xl flex flex-col items-start gap-6 group">
+                <div class="w-16 h-16 rounded-2xl bg-tertiary-container/20 flex items-center justify-center border border-tertiary-container/30 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                    <span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">sensors</span>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-white mb-4 group-hover:text-tertiary transition-colors">Real-time Monitoring</h3>
+                    <p class="font-body-md text-on-surface-variant leading-relaxed">Live telemetry from thousands of substations and transformers analyzed every millisecond for proactive maintenance and fault detection.</p>
+                </div>
+            </div>
+            <!-- Feature 2 -->
+            <div class="glass-card-interactive p-10 rounded-3xl flex flex-col items-start gap-6 group">
+                <div class="w-16 h-16 rounded-2xl bg-primary-container/20 flex items-center justify-center border border-primary-container/30 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-white mb-4 group-hover:text-primary transition-colors">Instant Dispatch</h3>
+                    <p class="font-body-md text-on-surface-variant leading-relaxed">Automated field technician assignment ensures the nearest engineer is dispatched within seconds of a verified grid fault.</p>
+                </div>
+            </div>
+            <!-- Feature 3 -->
+            <div class="glass-card-interactive p-10 rounded-3xl flex flex-col items-start gap-6 group">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                    <span class="material-symbols-outlined text-emerald-400 text-3xl" style="font-variation-settings: 'FILL' 1;">insights</span>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">Smart Analytics</h3>
+                    <p class="font-body-md text-on-surface-variant leading-relaxed">Advanced predictive models analyze peak loads and potential failure points before they ever impact the consumer's power supply.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it Works Section -->
+<section class="py-32 px-gutter bg-surface-container-low/80 overflow-hidden border-y border-white/5" id="how-it-works">
+    <div class="max-w-container-max mx-auto">
+        <div class="flex flex-col lg:flex-row gap-20 items-center">
+            <div class="w-full lg:w-1/2 reveal active">
+                <div class="relative">
+                    <div class="relative glass-card rounded-[2.5rem] p-4 border border-white/10 group">
+                        <div class="overflow-hidden rounded-[2rem]">
+                            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="A high-tech digital interface" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=1000&auto=format&fit=crop">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface-container-highest/80 via-transparent to-transparent rounded-[2.5rem] pointer-events-none"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full lg:w-1/2 space-y-12 reveal delay-200 active">
+                <div>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-6">Seamless <br><span class="text-primary">Infrastructure</span></h2>
+                    <p class="font-body-lg text-on-surface-variant">We've simplified power management into a streamlined workflow for both consumers and authorities, ensuring transparency at every step.</p>
+                </div>
+                <div class="space-y-10 relative before:absolute before:inset-0 before:ml-6 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+                    <!-- Step 1 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full border-[3px] border-surface-container-lowest bg-primary-container text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10 group-hover:scale-110 transition-transform">1</div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl hover:border-primary/50 transition-colors">
+                            <h4 class="font-display text-xl font-bold text-white mb-2">Instant Reporting</h4>
+                            <p class="font-body-sm text-on-surface-variant">Report issues via web, mobile app, or IVR with automated geo-tagging.</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full border-[3px] border-surface-container-lowest bg-tertiary-container text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10 group-hover:scale-110 transition-transform">2</div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl hover:border-tertiary/50 transition-colors">
+                            <h4 class="font-display text-xl font-bold text-white mb-2">Automated Verification</h4>
+                            <p class="font-body-sm text-on-surface-variant">Our system verifies the complaint against local transformer status and network health.</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full border-[3px] border-surface-container-lowest bg-emerald-500 text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10 group-hover:scale-110 transition-transform">3</div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl hover:border-emerald-500/50 transition-colors">
+                            <h4 class="font-display text-xl font-bold text-white mb-2">Rapid Resolution</h4>
+                            <p class="font-body-sm text-on-surface-variant">Technicians receive digitized work orders and live navigation to the fault site.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Complaint Categories -->
+<section class="py-32 px-gutter" id="categories">
+    <div class="max-w-container-max mx-auto">
+        <div class="mb-16 text-center reveal active">
+            <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Service <span class="text-tertiary">Categories</span></h2>
+            <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Select a category to view specialized protocols and report specific issues to the correct department.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal active">
+            <!-- Category 1 -->
+            <div class="p-8 rounded-3xl glass-card-interactive group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <span class="material-symbols-outlined text-5xl text-primary mb-6 block transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style="font-variation-settings: 'FILL' 1;">power</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-3">Transformer</h3>
+                    <p class="font-body-sm text-on-surface-variant">Fuses, oil leaks, or abnormal sounds from local distribution.</p>
+                </div>
+            </div>
+            <!-- Category 2 -->
+            <div class="p-8 rounded-3xl glass-card-interactive group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-tertiary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <span class="material-symbols-outlined text-5xl text-tertiary mb-6 block transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-3">Billing</h3>
+                    <p class="font-body-sm text-on-surface-variant">Discrepancies, tariff changes, or payment disputes.</p>
+                </div>
+            </div>
+            <!-- Category 3 -->
+            <div class="p-8 rounded-3xl glass-card-interactive group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <span class="material-symbols-outlined text-5xl text-amber-400 mb-6 block transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style="font-variation-settings: 'FILL' 1;">home_repair_service</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-3">Domestic</h3>
+                    <p class="font-body-sm text-on-surface-variant">House connection faults, meter issues, or voltage drops.</p>
+                </div>
+            </div>
+            <!-- Category 4 -->
+            <div class="p-8 rounded-3xl glass-card-interactive group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <span class="material-symbols-outlined text-5xl text-purple-400 mb-6 block transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style="font-variation-settings: 'FILL' 1;">apartment</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-3">Commercial</h3>
+                    <p class="font-body-sm text-on-surface-variant">High-tension line issues and industrial energy support.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion -->
+<section class="py-32 px-gutter relative" id="faq">
+    <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-16 reveal active">
+            <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Frequently Asked <span class="text-primary">Questions</span></h2>
+        </div>
+        <div class="space-y-5 reveal active">
+            <details class="group glass-card rounded-2xl overflow-hidden border border-white/5 bg-surface-container-low/80 hover:bg-surface-container/80 transition-colors">
+                <summary class="flex justify-between items-center p-7 cursor-pointer list-none focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-2xl">
+                    <span class="font-body-lg font-bold text-white">How long does a transformer repair typically take?</span>
+                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary bg-primary/10 p-1.5 rounded-full">expand_more</span>
+                </summary>
+                <div class="px-7 pb-7 pt-2 text-on-surface-variant font-body-md leading-relaxed">
+                    Minor fuse replacements are typically resolved within 2 hours. Major structural repairs may take 24-48 hours depending on parts availability.
+                </div>
+            </details>
+            <details class="group glass-card rounded-2xl overflow-hidden border border-white/5 bg-surface-container-low/80 hover:bg-surface-container/80 transition-colors">
+                <summary class="flex justify-between items-center p-7 cursor-pointer list-none focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-2xl">
+                    <span class="font-body-lg font-bold text-white">How can I track my complaint status?</span>
+                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary bg-primary/10 p-1.5 rounded-full">expand_more</span>
+                </summary>
+                <div class="px-7 pb-7 pt-2 text-on-surface-variant font-body-md leading-relaxed">
+                    You can use our 'Track Progress' feature on the home screen using your Docket Number or registered mobile number.
+                </div>
+            </details>
+            <details class="group glass-card rounded-2xl overflow-hidden border border-white/5 bg-surface-container-low/80 hover:bg-surface-container/80 transition-colors">
+                <summary class="flex justify-between items-center p-7 cursor-pointer list-none focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-2xl">
+                    <span class="font-body-lg font-bold text-white">Is there a priority service for hospitals?</span>
+                    <span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary bg-primary/10 p-1.5 rounded-full">expand_more</span>
+                </summary>
+                <div class="px-7 pb-7 pt-2 text-on-surface-variant font-body-md leading-relaxed">
+                    Yes, essential services like hospitals and public security infrastructure are flagged in our system for top-priority emergency response.
+                </div>
+            </details>
+        </div>
+    </div>
+</section>
+{% endblock %}

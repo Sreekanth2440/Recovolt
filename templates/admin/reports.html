@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+
+    <div>
+        <h4 class="font-display text-2xl font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-3xl">assessment</span> Reports & Analytics
+        </h4>
+        <p class="text-on-surface-variant text-sm mt-1">System-wide performance metrics and complaint analytics.</p>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-yellow-500/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-yellow-400 text-2xl group-hover:scale-110 transition-transform">star</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-yellow-400">{{ avg_rating }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Avg. Rating (out of 5)</div>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-orange-500/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-orange-400 text-2xl group-hover:scale-110 transition-transform">chat</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-orange-400">{{ total_feedbacks }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Total Feedbacks</div>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4 group hover:border-primary/20 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">list_alt</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-primary">{{ status_counts.values() | sum }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Total Complaints</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Status Chart -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">donut_large</span>
+                <h6 class="font-display font-bold text-on-surface">By Status</h6>
+            </div>
+            <div class="p-6 flex items-center justify-center">
+                <canvas id="statusChart" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Chart -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30 flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary text-[20px]">bar_chart</span>
+                <h6 class="font-display font-bold text-on-surface">By Category</h6>
+            </div>
+            <div class="p-6 flex items-center justify-center">
+                <canvas id="categoryChart" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- Priority Chart -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30 flex items-center gap-2">
+                <span class="material-symbols-outlined text-error text-[20px]">pie_chart</span>
+                <h6 class="font-display font-bold text-on-surface">By Priority</h6>
+            </div>
+            <div class="p-6 flex items-center justify-center">
+                <canvas id="priorityChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Breakdown Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Status Breakdown -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30">
+                <h6 class="font-display font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[18px]">analytics</span> Status Breakdown
+                </h6>
+            </div>
+            <div class="p-4 space-y-2">
+                {% for status, count in status_counts.items() %}
+                <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/30 hover:bg-white/5 border border-white/5 transition-colors">
+                    <span class="text-sm text-on-surface flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full
+                            {% if status == 'pending' %}bg-gray-400
+                            {% elif status == 'assigned' %}bg-cyan-400
+                            {% elif status == 'in_progress' %}bg-yellow-400
+                            {% elif status == 'resolved' %}bg-green-400
+                            {% elif status == 'closed' %}bg-gray-600
+                            {% else %}bg-primary{% endif %}"></span>
+                        {{ status.replace('_', ' ').title() }}
+                    </span>
+                    <strong class="text-sm text-on-surface font-data-tabular bg-surface-container px-3 py-1 rounded-full border border-white/5">{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category Breakdown -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30">
+                <h6 class="font-display font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">category</span> Category Breakdown
+                </h6>
+            </div>
+            <div class="p-4 space-y-2">
+                {% for category, count in category_counts.items() %}
+                <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/30 hover:bg-white/5 border border-white/5 transition-colors">
+                    <span class="text-sm text-on-surface">{{ category }}</span>
+                    <strong class="text-sm text-on-surface font-data-tabular bg-surface-container px-3 py-1 rounded-full border border-white/5">{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Priority Breakdown -->
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-5 border-b border-white/5 bg-surface-container/30">
+                <h6 class="font-display font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-error text-[18px]">priority_high</span> Priority Breakdown
+                </h6>
+            </div>
+            <div class="p-4 space-y-2">
+                {% for priority, count in priority_counts.items() %}
+                <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/30 hover:bg-white/5 border border-white/5 transition-colors">
+                    <span class="text-sm text-on-surface flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                            {% if priority == 'high' %}bg-error/20 text-error
+                            {% elif priority == 'medium' %}bg-orange-500/20 text-orange-400
+                            {% else %}bg-primary/20 text-primary{% endif %}">
+                            {{ priority }}
+                        </span>
+                    </span>
+                    <strong class="text-sm text-on-surface font-data-tabular bg-surface-container px-3 py-1 rounded-full border border-white/5">{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    const chartData = {{ chart_data | safe }};
+
+    // Theme-aware colors
+    const statusColors = ['#9ca3af', '#22d3ee', '#facc15', '#4ade80', '#4b5563'];
+    const categoryColors = ['#548dff', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee', '#94a3b8'];
+    const priorityColors = ['#548dff', '#facc15', '#f87171'];
+
+    const chartDefaults = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#8f9bb3',
+                    padding: 16,
+                    font: { size: 12, family: 'Inter' },
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            }
+        }
+    };
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: chartData.status.labels,
+            datasets: [{
+                data: chartData.status.values,
+                backgroundColor: statusColors,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                hoverOffset: 8
+            }],
+        },
+        options: {
+            ...chartDefaults,
+            cutout: '65%'
+        },
+    });
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.category.labels,
+            datasets: [{
+                label: 'Complaints',
+                data: chartData.category.values,
+                backgroundColor: categoryColors,
+                borderRadius: 6,
+                borderSkipped: false,
+            }],
+        },
+        options: {
+            ...chartDefaults,
+            plugins: {
+                ...chartDefaults.plugins,
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, color: '#8f9bb3', font: { size: 11 } },
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    border: { display: false }
+                },
+                x: {
+                    ticks: { color: '#8f9bb3', font: { size: 11 } },
+                    grid: { display: false },
+                    border: { display: false }
+                }
+            }
+        },
+    });
+
+    new Chart(document.getElementById('priorityChart'), {
+        type: 'pie',
+        data: {
+            labels: chartData.priority.labels,
+            datasets: [{
+                data: chartData.priority.values,
+                backgroundColor: priorityColors,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                hoverOffset: 8
+            }],
+        },
+        options: chartDefaults,
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block title %}Complaint #{{ complaint.id }} - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <a href="{{ url_for('worker.assigned_jobs') }}" class="w-8 h-8 rounded-full bg-surface-container hover:bg-white/10 text-on-surface-variant flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                </a>
+                <h4 class="font-display text-2xl font-bold text-on-surface">Complaint #{{ complaint.id }}</h4>
+            </div>
+            <p class="text-on-surface-variant text-sm mt-1 ml-11">Review details and contact the consumer if necessary.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm
+                {% if complaint.status == 'in_progress' %}bg-yellow-500/20 text-yellow-400 border border-yellow-500/30
+                {% elif complaint.status == 'resolved' or complaint.status == 'closed' %}bg-green-500/20 text-green-400 border border-green-500/30
+                {% else %}bg-primary-container/20 text-primary border border-primary-container/30{% endif %}">
+                {% if complaint.status == 'in_progress' %}<span class="material-symbols-outlined text-[18px]">engineering</span>
+                {% elif complaint.status == 'resolved' or complaint.status == 'closed' %}<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                {% else %}<span class="material-symbols-outlined text-[18px]">pending_actions</span>{% endif %}
+                {{ complaint.status_display }}
+            </span>
+            
+            {% if complaint.status in ('assigned', 'in_progress') %}
+            <a href="{{ url_for('worker.update_status', complaint_id=complaint.id) }}" class="px-5 py-2.5 bg-primary-container text-white rounded-lg text-sm font-bold hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(84,141,255,0.2)]">
+                <span class="material-symbols-outlined text-[18px]">edit_note</span> Update Status
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        
+        <!-- Complaint Details -->
+        <div class="lg:col-span-2 glass-card rounded-xl border border-white/5 overflow-hidden">
+            <div class="p-6 border-b border-white/5 bg-surface-container/30">
+                <h5 class="font-display text-xl font-bold text-on-surface">{{ complaint.title }}</h5>
+                <p class="text-sm text-on-surface-variant mt-1">Submitted on {{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-8">
+                <!-- Info Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container/30 p-6 rounded-xl border border-white/5">
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Category</span>
+                        <span class="text-on-surface font-medium">{{ complaint.category_display }}</span>
+                    </div>
+                    <div>
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Priority</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                            {% if complaint.priority == 'high' %}bg-error/20 text-error
+                            {% elif complaint.priority == 'medium' %}bg-orange-500/20 text-orange-400
+                            {% else %}bg-primary/20 text-primary{% endif %}">
+                            {{ complaint.priority }}
+                        </span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="block font-label-caps text-on-surface-variant mb-1">Location</span>
+                        <span class="text-on-surface font-medium flex items-start gap-2">
+                            <span class="material-symbols-outlined text-tertiary text-[20px]">location_on</span>
+                            {{ complaint.location }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Description</h6>
+                    <p class="text-on-surface leading-relaxed text-sm whitespace-pre-wrap">{{ complaint.description }}</p>
+                </div>
+
+                <!-- Image -->
+                {% if complaint.image %}
+                <div>
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Attached Image</h6>
+                    <div class="rounded-xl overflow-hidden border border-white/10 inline-block bg-surface-container">
+                        <img src="{{ url_for('static', filename='../uploads/' + complaint.image) }}" alt="Complaint Attachment" class="max-w-full h-auto max-h-[400px] object-contain">
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Map -->
+                {% if complaint.latitude and complaint.longitude %}
+                <div class="mt-8">
+                    <h6 class="font-label-caps text-on-surface-variant mb-3 border-b border-white/5 pb-2">Location Map</h6>
+                    <div class="rounded-xl overflow-hidden border border-white/10 h-[300px] w-full" id="map-{{ complaint.id }}"></div>
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var map = L.map('map-{{ complaint.id }}').setView([{{ complaint.latitude }}, {{ complaint.longitude }}], 15);
+                            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                                attribution: '&copy; OpenStreetMap contributors',
+                                subdomains: 'abcd',
+                                maxZoom: 20
+                            }).addTo(map);
+                            L.marker([{{ complaint.latitude }}, {{ complaint.longitude }}]).addTo(map)
+                                .bindPopup("<b>{{ complaint.location }}</b>").openPopup();
+                        });
+                    </script>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Consumer Info Panel -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+                <div class="p-4 bg-tertiary/20 border-b border-tertiary/30 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary">person</span>
+                    <h6 class="font-display font-bold text-on-surface">Consumer Details</h6>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-surface-container-highest border border-white/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-3xl text-tertiary">account_circle</span>
+                        </div>
+                        <div>
+                            <h6 class="font-bold text-on-surface text-lg">{{ complaint.consumer.name }}</h6>
+                            <p class="text-xs text-on-surface-variant tracking-wider uppercase">Consumer ID: {{ complaint.consumer.consumer_number or 'N/A' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="tel:{{ complaint.consumer.phone }}" class="flex items-center gap-3 p-3 rounded-lg bg-surface-container hover:bg-white/5 transition-colors group">
+                            <span class="material-symbols-outlined text-green-400 group-hover:scale-110 transition-transform">call</span>
+                            <span class="text-sm font-medium text-on-surface">{{ complaint.consumer.phone }}</span>
+                        </a>
+                        <a href="mailto:{{ complaint.consumer.email }}" class="flex items-center gap-3 p-3 rounded-lg bg-surface-container hover:bg-white/5 transition-colors group">
+                            <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">mail</span>
+                            <span class="text-sm font-medium text-on-surface break-all">{{ complaint.consumer.email }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Messages / Chat Panel -->
+            <div class="glass-card rounded-xl border border-white/5 overflow-hidden flex flex-col h-[500px]">
+                <div class="p-4 bg-secondary-container/30 border-b border-secondary-container/50 flex items-center justify-between gap-2 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">forum</span>
+                        <h6 class="font-display font-bold text-on-surface">Messages</h6>
+                    </div>
+                    <span class="text-xs px-2 py-1 bg-surface-container rounded text-on-surface-variant font-label-caps" id="msg-status">Live</span>
+                </div>
+                
+                <!-- Message List -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col" id="chat-messages" data-complaint-id="{{ complaint.id }}">
+                    <div class="text-center py-4">
+                        <span class="material-symbols-outlined text-on-surface-variant/50 animate-spin">refresh</span>
+                    </div>
+                </div>
+                
+                <!-- Message Input -->
+                <div class="p-4 border-t border-white/5 bg-surface-container/30 shrink-0">
+                    <form id="chat-form" class="flex items-end gap-2">
+                        <div class="flex-1 relative">
+                            <textarea id="chat-input" rows="1" placeholder="Type a message..." class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 px-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md resize-none" style="min-height: 42px; max-height: 120px;"></textarea>
+                        </div>
+                        <button type="submit" class="w-10 h-10 shrink-0 rounded-lg bg-primary text-on-primary hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">send</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const msgStatus = document.getElementById('msg-status');
+        
+        if (!chatForm) return;
+
+        const complaintId = chatMessages.dataset.complaintId;
+        const currentUserId = {{ current_user.id }};
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function fetchMessages() {
+            fetch(`/api/complaints/${complaintId}/messages`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.messages) {
+                        chatMessages.innerHTML = '';
+                        if (data.messages.length === 0) {
+                            chatMessages.innerHTML = '<div class="text-center py-6 text-on-surface-variant/50 text-sm">No messages yet. Start the conversation!</div>';
+                            return;
+                        }
+                        
+                        data.messages.forEach(msg => {
+                            const isMe = msg.sender_id === currentUserId;
+                            const alignClass = isMe ? 'items-end' : 'items-start';
+                            const bubbleClass = isMe 
+                                ? 'bg-primary-container text-on-primary-container rounded-tl-xl rounded-tr-xl rounded-bl-xl' 
+                                : 'bg-surface-container-highest text-on-surface rounded-tl-xl rounded-tr-xl rounded-br-xl';
+                                
+                            const senderLabel = isMe ? 'You' : msg.sender_name;
+                            
+                            const html = `
+                                <div class="flex flex-col ${alignClass} max-w-[85%] ${isMe ? 'ml-auto' : ''}">
+                                    <span class="text-[10px] text-on-surface-variant mb-1 ml-1">${senderLabel} &bull; ${msg.created_at}</span>
+                                    <div class="${bubbleClass} px-4 py-2 text-sm shadow-sm border border-white/5">
+                                        ${msg.content}
+                                    </div>
+                                </div>
+                            `;
+                            chatMessages.insertAdjacentHTML('beforeend', html);
+                        });
+                        scrollToBottom();
+                    }
+                })
+                .catch(err => {
+                    msgStatus.textContent = 'Disconnected';
+                    msgStatus.classList.replace('bg-surface-container', 'bg-error/20');
+                    msgStatus.classList.add('text-error');
+                });
+        }
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = chatInput.value.trim();
+            if (!content) return;
+            
+            chatInput.value = '';
+            chatInput.disabled = true;
+            
+            fetch(`/api/complaints/${complaintId}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: content })
+            })
+            .then(res => res.json())
+            .then(data => {
+                chatInput.disabled = false;
+                chatInput.focus();
+                if (data.success) {
+                    fetchMessages();
+                }
+            })
+            .catch(err => {
+                chatInput.disabled = false;
+            });
+        });
+
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        fetchMessages();
+        setInterval(fetchMessages, 5000);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - RecoVolt{% endblock %}
+
+{% block content_public %}
+<section class="min-h-screen flex items-center justify-center pt-24 pb-12 px-gutter relative overflow-hidden">
+    <div class="glass-card w-full max-w-[400px] p-8 md:p-10 rounded-2xl relative z-10 reveal active">
+        <div class="text-center mb-8">
+            <h2 class="font-display text-3xl text-on-surface mb-2 font-bold tracking-tight">Welcome Back</h2>
+            <p class="font-body-sm text-on-surface-variant">Sign in to your account</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="block font-label-caps text-on-surface-variant">Email</label>
+                <input type="email" name="email" required
+                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+            </div>
+
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block font-label-caps text-on-surface-variant">Password</label>
+                </div>
+                <input type="password" name="password" required
+                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+            </div>
+
+            <button type="submit" class="w-full bg-primary-container text-white py-3.5 rounded-lg font-bold hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors mt-8">
+                Login
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="font-body-sm text-on-surface-variant">
+                Don't have an account? 
+                <a href="{{ url_for('auth.register') }}" class="text-primary hover:underline font-medium transition-colors ml-1">Register</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

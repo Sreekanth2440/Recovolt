@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Consumers - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary text-3xl">group</span> Consumers
+            </h4>
+            <p class="text-on-surface-variant text-sm mt-1">Manage and view all registered consumers in the system.</p>
+        </div>
+    </div>
+
+    {% if users %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for u in users %}
+        <div class="glass-card rounded-xl border border-white/5 overflow-hidden flex flex-col group hover:border-tertiary/30 transition-all duration-300">
+            <div class="p-6 flex items-start gap-4 flex-1">
+                <div class="w-12 h-12 rounded-full bg-tertiary/20 border border-tertiary/30 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-tertiary">person</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h5 class="font-display font-bold text-lg text-on-surface truncate" title="{{ u.name }}">{{ u.name }}</h5>
+                    <div class="text-sm text-on-surface-variant truncate">{{ u.email }}</div>
+                    
+                    <div class="mt-4 space-y-2">
+                        <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[16px]">call</span>
+                            <span class="font-data-tabular">{{ u.phone }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[16px]">tag</span>
+                            <span class="font-data-tabular">{{ u.consumer_number or '—' }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            <span>{{ u.created_at.strftime('%b %Y') if u.created_at else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/5 bg-surface-container-lowest/30 p-3">
+                <a href="{{ url_for('admin.user_details', user_id=u.id) }}" class="w-full py-2 flex items-center justify-center gap-2 text-sm font-medium text-tertiary hover:text-white hover:bg-tertiary/10 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">visibility</span> View Full Profile
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-card rounded-xl border border-white/5 p-16 text-center flex flex-col items-center justify-center">
+        <div class="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center mb-6 border border-white/5">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant">person_off</span>
+        </div>
+        <h5 class="font-display text-xl font-bold text-on-surface mb-2">No consumers registered</h5>
+        <p class="text-on-surface-variant max-w-sm">There are no registered consumers yet.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

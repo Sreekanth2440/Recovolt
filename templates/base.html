@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% block title %}RecoVolt | Kerala's Modern Power Management System{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#3f465c",
+                    "on-secondary-container": "#adb4ce",
+                    "tertiary": "#7bd0ff",
+                    "surface-variant": "#26364a",
+                    "secondary-fixed": "#dae2fd",
+                    "tertiary-fixed-dim": "#7bd0ff",
+                    "outline-variant": "#414655",
+                    "surface": "#031427",
+                    "error": "#ffb4ab",
+                    "primary-container": "#548dff",
+                    "on-primary-fixed": "#001944",
+                    "surface-container-highest": "#26364a",
+                    "on-surface": "#d3e4fe",
+                    "on-background": "#d3e4fe",
+                    "on-tertiary-fixed": "#001e2c",
+                    "surface-container-low": "#0b1c30",
+                    "primary": "#afc6ff",
+                    "surface-container-lowest": "#000f21",
+                    "surface-bright": "#2a3a4f",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed-dim": "#afc6ff",
+                    "tertiary-container": "#009bd1",
+                    "surface-tint": "#afc6ff",
+                    "tertiary-fixed": "#c4e7ff",
+                    "on-tertiary-fixed-variant": "#004c69",
+                    "on-surface-variant": "#c1c6d8",
+                    "on-primary-fixed-variant": "#00429a",
+                    "inverse-surface": "#d3e4fe",
+                    "secondary": "#bec6e0",
+                    "on-secondary-fixed": "#131b2e",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#d9e2ff",
+                    "surface-container": "#102034",
+                    "background": "#031427",
+                    "on-tertiary": "#00354a",
+                    "outline": "#8c90a1",
+                    "on-primary": "#002d6d",
+                    "on-tertiary-container": "#002d40",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "on-primary-container": "#002760",
+                    "on-secondary": "#283044",
+                    "surface-container-high": "#1b2b3f",
+                    "inverse-on-surface": "#213145",
+                    "on-error": "#690005",
+                    "surface-dim": "#031427",
+                    "inverse-primary": "#0058c9",
+                    "secondary-fixed-dim": "#bec6e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "8px",
+                    "lg": "40px",
+                    "base": "4px",
+                    "gutter": "24px",
+                    "md": "24px",
+                    "container-max": "1440px",
+                    "sm": "16px",
+                    "xl": "64px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "display": ["Inter", "sans-serif"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "data-tabular": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "data-tabular": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        body {
+            background-color: #031427;
+            color: #d3e4fe;
+            scroll-behavior: smooth;
+        }
+        .glass-card {
+            background: rgba(16, 32, 52, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(175, 198, 255, 0.3);
+            background: rgba(27, 43, 63, 0.8);
+            transform: translateY(-4px);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(84, 141, 255, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 30px rgba(84, 141, 255, 0.5);
+        }
+        .step-line::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(175, 198, 255, 0.2), transparent);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Fix for double arrows in select dropdowns (removes native browser arrow and tailwind SVG) */
+        select {
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            background-image: none !important;
+        }
+    </style>
+    
+    <!-- Custom CSS (if any overrides needed) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="font-body-md overflow-x-hidden bg-background">
+    <!-- Premium Global Background -->
+    <div class="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdHRlcm4gaWQ9InNtYWxsR3JpZCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNMTAgMEwwIDBMMCAxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9InVybCgjc21hbGxHcmlkKSIvPjxwYXRoIGQ9Ik00MCAwTDAgMEwwIDQwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wNykiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-10 -z-10 pointer-events-none"></div>
+    <div class="fixed top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-background/60 to-background -z-10 pointer-events-none"></div>
+
+    <!-- Scroll Progress Indicator -->
+    <div id="scrollProgress"></div>
+    {% include 'includes/navbar.html' %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-24 right-4 z-50 flex flex-col gap-2">
+                {% for category, message in messages %}
+                    <div class="px-6 py-3 rounded-lg shadow-lg text-white font-medium 
+                        {% if category == 'success' %}bg-green-600/90
+                        {% elif category == 'danger' or category == 'error' %}bg-error/90 text-on-error
+                        {% elif category == 'warning' %}bg-yellow-600/90
+                        {% else %}bg-primary-container/90 text-on-primary-container{% endif %} 
+                        backdrop-blur-md border border-white/10 flex items-center justify-between gap-4">
+                        <span>{{ message }}</span>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-white/80 hover:text-white">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if current_user.is_authenticated %}
+    <main class="min-h-screen pt-24 pb-12 px-6 md:px-10 lg:px-16">
+        {% block content %}
+        {% endblock %}
+    </main>
+    {% else %}
+        {% block content_public %}
+        {% endblock %}
+    {% endif %}
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <script>
+        // Reveal on scroll logic
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth scroll implementation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Sticky Navbar - no padding change on scroll
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

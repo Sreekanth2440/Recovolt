@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Add Worker - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div>
+        <div class="flex items-center gap-3 mb-1">
+            <a href="{{ url_for('admin.workers') }}" class="w-8 h-8 rounded-full bg-surface-container hover:bg-white/10 text-on-surface-variant flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </a>
+            <h2 class="font-display text-2xl font-bold text-on-surface">Add New Worker</h2>
+        </div>
+        <p class="text-on-surface-variant text-sm mt-1 ml-11">Register a new KSEB field worker into the RecoVolt system.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-5 border-b border-white/5 bg-surface-container/30 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">badge</span>
+            <h4 class="font-display text-lg font-bold text-on-surface">Worker Information</h4>
+        </div>
+
+        <div class="p-6 md:p-8">
+            <form method="POST" id="workerForm" class="space-y-8">
+
+                <!-- Personal Details -->
+                <div>
+                    <h6 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                        <span class="material-symbols-outlined text-tertiary text-[18px]">person</span> Personal Details
+                    </h6>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Full Name <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">badge</span>
+                                <input type="text" name="name" placeholder="Enter worker's full name" required
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Employee ID <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">tag</span>
+                                <input type="text" name="employee_id" placeholder="e.g. EMP1024" required
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h6 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                        <span class="material-symbols-outlined text-tertiary text-[18px]">contact_phone</span> Contact Information
+                    </h6>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Email <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">mail</span>
+                                <input type="email" name="email" placeholder="worker@kseb.in" required
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Phone <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">call</span>
+                                <input type="text" name="phone" placeholder="10-digit mobile number" required
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Details -->
+                <div>
+                    <h6 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                        <span class="material-symbols-outlined text-tertiary text-[18px]">work</span> Work Details
+                    </h6>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Designation</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">engineering</span>
+                                <input type="text" name="designation" placeholder="Line Worker, Electrician"
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-2">Section</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">map</span>
+                                <input type="text" name="section" placeholder="Service Section"
+                                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Credentials -->
+                <div>
+                    <h6 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                        <span class="material-symbols-outlined text-tertiary text-[18px]">lock</span> Login Credentials
+                    </h6>
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-2">Password <span class="text-error">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-[18px]">key</span>
+                            <input type="password" name="password" placeholder="Minimum 6 characters" required
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all">
+                        </div>
+                        <p class="text-xs text-on-surface-variant mt-2">This password will be used by the worker to log into RecoVolt.</p>
+                    </div>
+                </div>
+
+                <!-- Info Notice -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                    <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-primary text-[20px]">info</span>
+                    </div>
+                    <div>
+                        <strong class="text-sm text-on-surface">Login Information</strong>
+                        <p class="text-sm text-on-surface-variant mt-1">After creating the account, the worker can log in using their Employee ID or registered email along with the password.</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
+                    <a href="{{ url_for('admin.workers') }}" class="flex-1 sm:flex-none px-6 py-3 bg-surface-container border border-white/5 hover:bg-white/10 rounded-lg text-sm font-medium text-on-surface-variant transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">close</span> Cancel
+                    </a>
+                    <button type="submit" class="flex-1 sm:flex-none px-6 py-3 bg-primary-container text-white rounded-lg text-sm font-bold hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(84,141,255,0.2)]">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span> Add Worker
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

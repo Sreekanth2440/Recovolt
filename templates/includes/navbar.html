@@ -1,0 +1,95 @@
+<nav class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm transition-all duration-300">
+<div class="relative flex justify-between items-center px-6 py-2 md:py-3 w-full">
+    <!-- Left: Logo -->
+    <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">bolt</span>
+        </div>
+        <a href="{{ url_for('home') }}" class="font-display text-xl font-bold text-primary tracking-tight">RecoVolt</a>
+    </div>
+    
+    <!-- Center: Context-aware nav items (absolutely centered) -->
+    <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-1 items-center">
+        {% if current_user.is_authenticated %}
+            <!-- Role badge + quick nav for logged-in users -->
+            <div class="flex items-center gap-1 bg-surface-container/60 border border-white/5 rounded-full px-1 py-1">
+                {% if current_user.role == 'consumer' %}
+                    <a href="{{ url_for('consumer.dashboard') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'consumer.dashboard' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                    </a>
+                    <a href="{{ url_for('consumer.new_complaint') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'consumer.new_complaint' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">add_circle</span> New Complaint
+                    </a>
+                    <a href="{{ url_for('consumer.complaint_history') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'consumer.complaint_history' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">list_alt</span> My Complaints
+                    </a>
+                    <a href="{{ url_for('consumer.profile') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'consumer.profile' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">person</span> Profile
+                    </a>
+
+                {% elif current_user.role == 'worker' %}
+                    <a href="{{ url_for('worker.dashboard') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'worker.dashboard' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                    </a>
+                    <a href="{{ url_for('worker.assigned_jobs') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'worker.assigned_jobs' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">engineering</span> Assigned
+                    </a>
+                    <a href="{{ url_for('worker.completed_jobs') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'worker.completed_jobs' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">task_alt</span> Completed
+                    </a>
+                    <a href="{{ url_for('worker.profile') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'worker.profile' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">person</span> Profile
+                    </a>
+
+                {% elif current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'admin.dashboard' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.complaints') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'admin.complaints' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">assignment</span> Complaints
+                    </a>
+                    <a href="{{ url_for('admin.users') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'admin.users' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">group</span> Users
+                    </a>
+                    <a href="{{ url_for('admin.workers') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'admin.workers' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">support_agent</span> Workers
+                    </a>
+                    <a href="{{ url_for('admin.reports') }}" class="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all {% if request.endpoint == 'admin.reports' %}bg-primary-container text-white shadow-[0_0_10px_rgba(84,141,255,0.2)]{% else %}text-on-surface-variant hover:text-on-surface hover:bg-white/5{% endif %}">
+                        <span class="material-symbols-outlined text-[16px]">assessment</span> Reports
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <a class="text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200" href="{{ url_for('home') }}#features">Features</a>
+            <a class="text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200 ml-6" href="{{ url_for('home') }}#how-it-works">How it Works</a>
+            <a class="text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200 ml-6" href="{{ url_for('home') }}#categories">Categories</a>
+            <a class="text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200 ml-6" href="{{ url_for('home') }}#faq">FAQ</a>
+        {% endif %}
+    </div>
+    
+    <!-- Right: Auth actions -->
+    <div class="flex items-center gap-4">
+        {% if current_user.is_authenticated %}
+            <div class="hidden sm:flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-[16px]">person</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-on-surface text-sm font-medium leading-tight">{{ current_user.name }}</span>
+                    <span class="text-on-surface-variant text-[10px] uppercase tracking-wider font-bold">{{ current_user.role }}</span>
+                </div>
+            </div>
+            <a class="bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2" href="{{ url_for('auth.logout') }}">
+                <span class="material-symbols-outlined text-sm">logout</span> Logout
+            </a>
+        {% else %}
+            <a class="flex items-center gap-1.5 text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200" href="{{ url_for('auth.login') }}">
+                <span class="material-symbols-outlined text-[18px]">login</span> Login
+            </a>
+            <a class="flex items-center gap-1.5 text-on-surface-variant text-sm font-medium hover:text-primary transition-colors duration-200" href="{{ url_for('auth.register') }}">
+                <span class="material-symbols-outlined text-[18px]">person_add</span> Register
+            </a>
+        {% endif %}
+    </div>
+</div>
+</nav>

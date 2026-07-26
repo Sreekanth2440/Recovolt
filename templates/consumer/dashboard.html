@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface">Consumer Dashboard</h4>
+            <p class="text-on-surface-variant text-sm mt-1">Welcome back, {{ current_user.name }}. Here is an overview of your complaints.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{ url_for('consumer.complaint_history') }}" class="px-4 py-2 bg-surface-container border border-white/5 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">history</span> History
+            </a>
+            <a href="{{ url_for('consumer.new_complaint') }}" class="px-4 py-2 bg-primary-container hover:bg-primary-fixed hover:text-on-primary-fixed text-white rounded-lg text-sm font-bold transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">add</span> File Complaint
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant">list_alt</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-on-surface">{{ total }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Total Complaints</div>
+            </div>
+        </div>
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-yellow-400">pending_actions</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-yellow-400">{{ pending }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Pending</div>
+            </div>
+        </div>
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary">engineering</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-primary">{{ in_progress }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">In Progress</div>
+            </div>
+        </div>
+        <div class="glass-card p-6 rounded-xl border border-white/5 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-green-400">task_alt</span>
+            </div>
+            <div>
+                <div class="font-display text-2xl font-bold text-green-400">{{ resolved }}</div>
+                <div class="text-xs font-label-caps text-on-surface-variant tracking-wider uppercase mt-1">Resolved</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Progress -->
+    {% if total > 0 %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 glass-card p-6 rounded-xl border border-white/5 flex flex-col">
+            <h6 class="font-display text-lg font-bold text-on-surface mb-6">Complaint Overview</h6>
+            <div class="flex-1 flex items-center justify-center relative min-h-[200px]">
+                <canvas id="consumerChart"></canvas>
+            </div>
+        </div>
+        <div class="lg:col-span-2 glass-card p-6 rounded-xl border border-white/5 flex flex-col justify-center">
+            <h5 class="font-display text-lg font-bold text-on-surface mb-2">Resolution Progress</h5>
+            {% set progress = ((resolved / total) * 100) | round | int if total > 0 else 0 %}
+            <p class="text-sm text-on-surface-variant mb-6">
+                {% if pending > 0 %}
+                You have {{ pending }} complaint(s) currently awaiting action.
+                {% else %}
+                All your complaints are being handled or resolved.
+                {% endif %}
+            </p>
+            
+            <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-on-surface-variant">{{ resolved }} of {{ total }} complaints resolved</span>
+                    <strong class="text-primary">{{ progress }}%</strong>
+                </div>
+                <div class="w-full bg-surface-container-highest rounded-full h-3 overflow-hidden border border-white/5">
+                    <div class="bg-gradient-to-r from-primary-container to-tertiary h-full rounded-full transition-all duration-1000" style="width: {{ progress }}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Complaints Table -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface-container/30">
+            <h5 class="font-display text-lg font-bold text-on-surface">Recent Complaints</h5>
+        </div>
+        
+        <div class="p-6">
+            {% if recent %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for c in recent %}
+                <div class="glass-card-interactive group p-6 rounded-2xl flex flex-col justify-between border border-white/5 hover:border-primary/40 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                {% if c.priority == 'high' %}bg-error/20 text-error border border-error/20
+                                {% elif c.priority == 'medium' %}bg-orange-500/20 text-orange-400 border border-orange-500/20
+                                {% else %}bg-primary/20 text-primary border border-primary/20{% endif %}">
+                                {{ c.priority }}
+                            </span>
+                            <span class="text-xs font-data-tabular text-on-surface-variant">#{{ c.id }}</span>
+                        </div>
+                        <h4 class="font-display text-lg font-bold text-white mb-2">{{ c.title }}</h4>
+                        <p class="text-sm text-on-surface-variant mb-4">{{ c.category_display }}</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="inline-flex items-center gap-1 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-[16px]">event</span> 
+                                <span>{{ c.created_at.strftime('%d %b %Y') }}</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider
+                                {% if c.status == 'resolved' or c.status == 'closed' %}bg-green-500/10 text-green-400 border border-green-500/20
+                                {% elif c.status == 'pending' %}bg-yellow-500/10 text-yellow-400 border border-yellow-500/20
+                                {% else %}bg-primary/10 text-primary border border-primary/20{% endif %}">
+                                {% if c.status == 'resolved' or c.status == 'closed' %}<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                                {% elif c.status == 'pending' %}<span class="material-symbols-outlined text-[12px]">pending</span>
+                                {% else %}<span class="material-symbols-outlined text-[12px] animate-spin">autorenew</span>{% endif %}
+                                {{ c.status_display }}
+                            </span>
+                        </div>
+                        <a href="{{ url_for('consumer.complaint_details', complaint_id=c.id) }}" class="w-full text-center relative overflow-hidden bg-gradient-to-r from-primary-container to-blue-600 text-white py-2 rounded-xl font-bold flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all hover:-translate-y-1">
+                            <span class="material-symbols-outlined text-[18px]">visibility</span> View Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-12 text-center flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-surface-container rounded-2xl flex items-center justify-center mb-4 border border-white/5">
+                    <span class="material-symbols-outlined text-3xl text-on-surface-variant">inbox</span>
+                </div>
+                <h5 class="font-display text-lg font-bold text-on-surface mb-2">No complaints yet</h5>
+                <p class="text-sm text-on-surface-variant mb-6 max-w-sm">You haven't filed any complaints yet. Click the button below to get started.</p>
+                <a href="{{ url_for('consumer.new_complaint') }}" class="px-6 py-3 bg-primary-container text-white rounded-lg text-sm font-bold transition-colors">
+                    File New Complaint
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if total > 0 %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    Chart.defaults.color = '#adb4ce';
+    Chart.defaults.font.family = 'Inter';
+    
+    const chartData = {{ chart_data | tojson }};
+    new Chart(document.getElementById('consumerChart'), {
+        type: 'doughnut',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                data: chartData.values,
+                backgroundColor: ['#facc15', '#548dff', '#4ade80'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: { 
+                legend: { 
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(3, 20, 39, 0.9)',
+                    titleColor: '#d3e4fe',
+                    bodyColor: '#adb4ce',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true
+                }
+            },
+        },
+    });
+</script>
+{% endif %}
+{% endblock %}

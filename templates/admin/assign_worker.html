@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Worker - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div>
+        <div class="flex items-center gap-3 mb-1">
+            <a href="{{ url_for('admin.complaint_details', complaint_id=complaint.id) }}" class="w-8 h-8 rounded-full bg-surface-container hover:bg-white/10 text-on-surface-variant flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </a>
+            <h2 class="font-display text-2xl font-bold text-on-surface">Assign Worker</h2>
+        </div>
+        <p class="text-on-surface-variant text-sm mt-1 ml-11">Select a field worker to handle this complaint.</p>
+    </div>
+
+    <!-- Complaint Summary Card -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-5 border-b border-white/5 bg-surface-container/30 flex justify-between items-center">
+            <h4 class="font-display text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">assignment</span>
+                Complaint #{{ complaint.id }}
+            </h4>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-error/10 text-error border border-error/20">
+                Pending
+            </span>
+        </div>
+        <div class="p-6 space-y-4">
+            <h5 class="text-lg font-bold text-on-surface">{{ complaint.title }}</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-surface-container/50 rounded-lg p-3 border border-white/5">
+                    <span class="block text-[10px] uppercase tracking-wider text-on-surface-variant mb-1">Category</span>
+                    <span class="text-sm font-medium text-on-surface">{{ complaint.category_display }}</span>
+                </div>
+                <div class="bg-surface-container/50 rounded-lg p-3 border border-white/5">
+                    <span class="block text-[10px] uppercase tracking-wider text-on-surface-variant mb-1">Priority</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                        {% if complaint.priority == 'high' %}bg-error/20 text-error
+                        {% elif complaint.priority == 'medium' %}bg-orange-500/20 text-orange-400
+                        {% else %}bg-primary/20 text-primary{% endif %}">
+                        {{ complaint.priority }}
+                    </span>
+                </div>
+                <div class="bg-surface-container/50 rounded-lg p-3 border border-white/5">
+                    <span class="block text-[10px] uppercase tracking-wider text-on-surface-variant mb-1">Location</span>
+                    <span class="text-sm font-medium text-on-surface flex items-start gap-1">
+                        <span class="material-symbols-outlined text-[16px] text-tertiary mt-0.5">location_on</span>
+                        {{ complaint.location }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Form -->
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-5 border-b border-white/5 bg-surface-container/30">
+            <h4 class="font-display text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">person_add</span> Select Worker
+            </h4>
+        </div>
+        <div class="p-6">
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-on-surface mb-2">Available Workers</label>
+                    <div class="relative">
+                        <select name="worker_id" required class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-sm text-on-surface focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none">
+                            <option value="" class="bg-surface-container">Choose a worker...</option>
+                            {% for w in workers %}
+                            <option value="{{ w.id }}" class="bg-surface-container">
+                                {{ w.name }} — {{ w.designation or 'Worker' }}
+                                {% if w.section %}({{ w.section }}){% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 pointer-events-none text-[20px]">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Info Notice -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                    <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-primary text-[20px]">mail</span>
+                    </div>
+                    <div>
+                        <strong class="text-sm text-on-surface">Email Notification</strong>
+                        <p class="text-sm text-on-surface-variant mt-1">The selected worker will automatically receive an email containing the complaint details after assignment.</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
+                    <a href="{{ url_for('admin.complaint_details', complaint_id=complaint.id) }}" class="flex-1 sm:flex-none px-6 py-3 bg-surface-container border border-white/5 hover:bg-white/10 rounded-lg text-sm font-medium text-on-surface-variant transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">close</span> Cancel
+                    </a>
+                    <button type="submit" class="flex-1 sm:flex-none px-6 py-3 bg-primary-container text-white rounded-lg text-sm font-bold hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(84,141,255,0.2)]">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span> Assign Worker
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h4 class="font-display text-2xl font-bold text-on-surface">My Profile</h4>
+            <p class="text-on-surface-variant text-sm mt-1">Manage your account settings and personal information.</p>
+        </div>
+    </div>
+
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 bg-surface-container/30 flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/30 flex items-center justify-center">
+                <span class="material-symbols-outlined text-4xl text-primary">account_circle</span>
+            </div>
+            <div>
+                <h5 class="font-display text-xl font-bold text-on-surface">{{ current_user.name }}</h5>
+                <p class="text-on-surface-variant text-sm">{{ current_user.email }}</p>
+            </div>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <form method="POST" class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Full Name *</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">person</span>
+                            <input type="text" name="name" value="{{ current_user.name }}" required
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Phone Number *</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">phone</span>
+                            <input type="text" name="phone" value="{{ current_user.phone }}" required
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="space-y-2">
+                    <label class="block font-label-caps text-on-surface-variant">Address</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-4 material-symbols-outlined text-on-surface-variant text-xl">home</span>
+                        <textarea name="address" rows="2"
+                                  class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">{{ current_user.address or '' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Section -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">KSEB Section</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">store</span>
+                            <input type="text" name="section" value="{{ current_user.section or '' }}"
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+
+                    <!-- Substation -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Substation</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">electrical_services</span>
+                            <input type="text" name="substation" value="{{ current_user.substation or '' }}"
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+
+                    <!-- Tariff -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Tariff</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">receipt_long</span>
+                            <input type="text" name="tariff" value="{{ current_user.tariff or '' }}" placeholder="e.g. LT-1 Dom"
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+
+                    <!-- Connected Load -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Connected Load</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">power</span>
+                            <input type="text" name="connected_load" value="{{ current_user.connected_load or '' }}" placeholder="e.g. 2 kW"
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+
+                    <!-- Meter Number -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Meter Number</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">speed</span>
+                            <input type="text" name="meter_number" value="{{ current_user.meter_number or '' }}"
+                                   class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-white/5 my-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Email (Disabled) -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Email Address</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-xl">mail</span>
+                            <input type="email" value="{{ current_user.email }}" disabled
+                                   class="w-full bg-surface-container/50 border border-white/5 rounded-lg py-3 pl-12 pr-4 text-on-surface-variant/70 cursor-not-allowed font-body-md">
+                        </div>
+                        <p class="text-xs text-on-surface-variant/70 mt-1 pl-1">Email cannot be changed.</p>
+                    </div>
+
+                    <!-- Consumer Number (Disabled) -->
+                    <div class="space-y-2">
+                        <label class="block font-label-caps text-on-surface-variant">Consumer Number</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-xl">tag</span>
+                            <input type="text" value="{{ current_user.consumer_number or 'N/A' }}" disabled
+                                   class="w-full bg-surface-container/50 border border-white/5 rounded-lg py-3 pl-12 pr-4 text-on-surface-variant/70 cursor-not-allowed font-body-md">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Since -->
+                <div class="space-y-2 max-w-md">
+                    <label class="block font-label-caps text-on-surface-variant">Member Since</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50 text-xl">event</span>
+                        <input type="text" value="{{ current_user.created_at.strftime('%d %b %Y') if current_user.created_at else 'N/A' }}" disabled
+                               class="w-full bg-surface-container/50 border border-white/5 rounded-lg py-3 pl-12 pr-4 text-on-surface-variant/70 cursor-not-allowed font-body-md">
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/5 flex justify-end">
+                    <button type="submit" class="relative overflow-hidden bg-gradient-to-r from-primary-container to-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 group text-base shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(84,141,255,0.4)] transition-all hover:-translate-y-1 px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">save</span> Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

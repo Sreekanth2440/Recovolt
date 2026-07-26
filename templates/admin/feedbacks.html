@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Feedbacks - RecoVolt{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <div>
+        <h4 class="font-display text-2xl font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-yellow-400 text-3xl">rate_review</span> All Feedbacks
+        </h4>
+        <p class="text-on-surface-variant text-sm mt-1">Consumer satisfaction ratings and comments on resolved complaints.</p>
+    </div>
+
+    <div class="glass-card rounded-xl border border-white/5 overflow-hidden">
+        {% if feedbacks %}
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for f in feedbacks %}
+                <div class="glass-card-interactive group p-6 rounded-2xl flex flex-col justify-between border border-white/5 hover:border-yellow-400/40 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-xs font-data-tabular text-on-surface-variant">#{{ f.id }}</span>
+                            <div class="flex items-center gap-0.5">
+                                {% for i in range(5) %}
+                                    {% if i < f.rating %}
+                                        <span class="material-symbols-outlined text-yellow-400 text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    {% else %}
+                                        <span class="material-symbols-outlined text-surface-container-highest text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <h4 class="font-display text-lg font-bold text-white mb-2">
+                            <a href="{{ url_for('admin.complaint_details', complaint_id=f.complaint_id) }}" class="hover:text-primary transition-colors">
+                                {{ f.complaint.title }}
+                            </a>
+                        </h4>
+                        <div class="flex items-center gap-2 text-sm text-on-surface-variant mb-4">
+                            <span class="material-symbols-outlined text-[16px]">person</span> {{ f.consumer.name }}
+                        </div>
+                        <div class="bg-surface-container/50 p-4 rounded-xl border border-white/5 relative">
+                            <span class="material-symbols-outlined text-surface-container-highest text-4xl absolute -top-3 -left-2 opacity-50">format_quote</span>
+                            <p class="text-sm text-on-surface relative z-10 italic {{ '' if f.comment else 'text-on-surface-variant/50' }}">
+                                {{ f.comment or 'No written feedback provided.' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center text-xs text-on-surface-variant">
+                        <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">event</span> {{ f.created_at.strftime('%d %b %Y') }}
+                        </span>
+                        <a href="{{ url_for('admin.complaint_details', complaint_id=f.complaint_id) }}" class="text-primary hover:text-primary-fixed font-bold flex items-center gap-1">
+                            View Complaint <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="p-16 text-center flex flex-col items-center justify-center bg-surface-container/20">
+            <div class="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center mb-6 border border-white/5">
+                <span class="material-symbols-outlined text-4xl text-on-surface-variant">star_border</span>
+            </div>
+            <h5 class="font-display text-xl font-bold text-on-surface mb-2">No feedbacks yet</h5>
+            <p class="text-on-surface-variant max-w-sm">Feedbacks will appear here after complaints are resolved and consumers leave their reviews.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
