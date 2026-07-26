@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from models import db
 from models.complaint import Complaint
 from models.feedback import Feedback
+from utils.constants import ERNAKULAM_SECTIONS
 
 consumer = Blueprint("consumer", __name__, url_prefix="/consumer")
 
@@ -88,7 +89,7 @@ def profile():
         flash("Profile updated successfully.", "success")
         return redirect(url_for("consumer.profile"))
 
-    return render_template("consumer/profile.html")
+    return render_template("consumer/profile.html", sections=ERNAKULAM_SECTIONS)
 
 
 # ────────────────── File Complaint ────────────────── #

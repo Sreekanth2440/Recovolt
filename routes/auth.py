@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from models import db
 from models.user import User
+from utils.constants import ERNAKULAM_SECTIONS
 
 auth = Blueprint("auth", __name__)
 
@@ -45,7 +46,7 @@ def register():
 
         return redirect(url_for("auth.login"))
 
-    return render_template("auth/register.html")
+    return render_template("auth/register.html", sections=ERNAKULAM_SECTIONS)
 
 
 # ---------------- Login ---------------- #
