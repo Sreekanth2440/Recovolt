@@ -4,29 +4,44 @@
 
 {% block content_public %}
 <section class="min-h-screen flex items-center justify-center pt-24 pb-12 px-gutter relative overflow-hidden">
-    <div class="glass-card w-full max-w-[400px] p-8 md:p-10 rounded-2xl relative z-10 reveal active">
-        <div class="text-center mb-8">
+    <!-- Background Glow Effect -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <div class="glass-card w-full max-w-[420px] p-8 md:p-10 rounded-3xl relative z-10 reveal active">
+        <div class="text-center mb-10">
+            <div class="w-16 h-16 bg-primary-container/20 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-primary-container/30 shadow-lg">
+                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">login</span>
+            </div>
             <h2 class="font-display text-3xl text-on-surface mb-2 font-bold tracking-tight">Welcome Back</h2>
             <p class="font-body-sm text-on-surface-variant">Sign in to your account</p>
         </div>
 
         <form method="POST" class="space-y-6" autocomplete="off">
             <div class="space-y-2">
-                <label class="block font-label-caps text-on-surface-variant">Email</label>
-                <input type="email" name="email" required autocomplete="new-password"
-                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                <label class="block font-label-caps text-on-surface-variant">Email Address</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">mail</span>
+                    <input type="email" name="email" required autocomplete="new-password"
+                           class="w-full bg-surface-container-highest border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                </div>
             </div>
 
             <div class="space-y-2">
                 <div class="flex justify-between items-center">
                     <label class="block font-label-caps text-on-surface-variant">Password</label>
                 </div>
-                <input type="password" name="password" required autocomplete="new-password"
-                       class="w-full bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl">lock</span>
+                    <input type="password" name="password" required autocomplete="new-password"
+                           class="w-full bg-surface-container-highest border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-body-md">
+                </div>
             </div>
 
-            <button type="submit" class="w-full bg-primary-container text-white py-3.5 rounded-lg font-bold hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors mt-8">
-                Login
+            <button type="submit" class="relative overflow-hidden bg-gradient-to-r from-primary-container to-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 group text-base shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(84,141,255,0.4)] transition-all hover:-translate-y-1 w-full py-4 mt-8">
+                Sign In
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
             </button>
         </form>
 

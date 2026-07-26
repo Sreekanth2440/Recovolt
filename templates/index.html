@@ -44,25 +44,25 @@
 <section class="py-24 px-gutter relative z-20 -mt-20">
     <div class="max-w-container-max mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center reveal active">
         <!-- Stat 1 -->
-        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card-interactive bg-white/5 overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.total if stats and stats.total else '500' }}" data-suffix="{{ 'k+' if not stats else '' }}">{{ stats.total if stats else '500k+' }}</div>
             <div class="font-label-caps text-primary uppercase tracking-widest text-xs font-semibold">Total Complaints</div>
         </div>
         <!-- Stat 2 -->
-        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card-interactive bg-white/5 overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.resolved if stats and stats.resolved else '485' }}" data-suffix="{{ 'k+' if not stats else '' }}">{{ stats.resolved if stats else '485k+' }}</div>
             <div class="font-label-caps text-emerald-400 uppercase tracking-widest text-xs font-semibold">Resolved</div>
         </div>
         <!-- Stat 3 -->
-        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card-interactive bg-white/5 overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.avg_rating if stats and stats.avg_rating else '4.9' }}" data-suffix="/5">{{ stats.avg_rating if stats else '4.9/5' }}</div>
             <div class="font-label-caps text-amber-400 uppercase tracking-widest text-xs font-semibold">Avg Consumer Rating</div>
         </div>
         <!-- Stat 4 -->
-        <div class="group relative space-y-3 p-8 rounded-2xl glass-card overflow-hidden">
+        <div class="group relative space-y-3 p-8 rounded-2xl glass-card-interactive bg-white/5 overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <div class="font-display text-4xl md:text-5xl font-black text-white tracking-tighter counter-val drop-shadow-md" data-target="{{ stats.resolution_rate if stats and stats.resolution_rate else '98.5' }}" data-suffix="%">{{ stats.resolution_rate if stats else '98.5%' }}</div>
             <div class="font-label-caps text-sky-400 uppercase tracking-widest text-xs font-semibold">Resolution Rate</div>
